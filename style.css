@@ -1,0 +1,434 @@
+body {
+    margin: 0;
+    font-family: sans-serif;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    background-color: rgba(179, 157, 219, 0.5);
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 30px;
+    background-color: #333;
+    border-bottom: 1px solid #eee;
+}
+
+.logo {
+    font-size: 22px;
+    font-weight: bold;
+    color: #B39DDB;
+    text-decoration: none;
+}
+
+nav a {
+    margin-left: 20px;
+    text-decoration: none;
+    color: white;
+    font-weight: bold;
+    text-shadow: 0px 0px 2px rgba(255, 255, 255, 0.8);
+    transition: color 0.3s ease;
+}
+
+nav a:hover {
+    color: #9575CD;
+}
+
+h1 {
+    text-align: center;
+    margin-top: 40px;
+    color: #000000;
+    text-shadow: 0px 0px 5px rgba(255, 255, 255, 0.5);
+}
+
+main {
+    flex: 1;
+    padding: 20px;
+    text-align: center;
+}
+
+footer {
+    background-color: #333;
+    color: white;
+    padding: 40px 20px;
+    margin-top: auto;
+}
+
+.footer-container {
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.footer-column {
+    flex: 1;
+    min-width: 250px;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.footer-column h3 {
+    color: #B39DDB;
+    margin-bottom: 20px;
+}
+
+.footer-column p,
+.footer-column a {
+    color: #ccc;
+    text-decoration: none;
+    display: inline-block;
+    margin: 8px 0;
+    font-size: 14px;
+    text-shadow: 0px 0px 2px rgba(255, 255, 255, 0.4);
+}
+
+.footer-column a:hover {
+    color: #9575CD;
+    text-decoration: underline;
+    transition: color 0.3s ease;
+}
+
+.menu-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 30px;
+    padding: 40px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.item-tile {
+    background-color: #FFFACD;
+    border: 1px solid #ddd;
+    border-radius: 12px;
+    padding: 20px;
+    text-align: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s;
+}
+
+.item-tile:hover {
+    transform: translateY(-5px);
+    border-color: #B39DDB;
+}
+
+.item-tile h3 {
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.item-tile p {
+    color: #666;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.item-tile .price {
+    display: block;
+    margin-top: 15px;
+    font-weight: bold;
+    color: #B39DDB;
+    font-size: 1.2rem;
+}
+
+.item-tile img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 8px 8px 0 0;
+    margin-bottom: 15px;
+}
+
+.item-tile img.drink-thumb {
+    object-fit: contain;
+    background-color: transparent;
+    padding: 10px;
+}
+
+.logo-img {
+    height: 80px;
+    width: auto;
+    display: block;
+    z-index: 10;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+}
+
+/* ---------- Add-to-cart controls (match your theme) ---------- */
+
+.cart-link {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.cart-badge {
+  display: inline-block;
+  min-width: 22px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 12px;
+  line-height: 18px;
+  text-align: center;
+  background: #B39DDB;      /* your purple */
+  color: #333;
+  font-weight: bold;
+}
+
+.cart-controls {
+  margin-top: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.cart-controls label {
+  font-size: 0.9rem;
+  color: #333;
+  font-weight: bold;
+}
+
+.qty-input {
+  width: 70px;
+  padding: 8px 10px;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  outline: none;
+  text-align: center;
+  font-weight: bold;
+  background: #fff;
+}
+
+.qty-input:focus {
+  border-color: #B39DDB;
+  box-shadow: 0 0 0 3px rgba(179, 157, 219, 0.25);
+}
+
+.add-btn {
+  padding: 10px 14px;
+  border: none;
+  border-radius: 10px;
+  background: #333;          /* matches header/footer */
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  text-shadow: 0px 0px 2px rgba(255, 255, 255, 0.35);
+  transition: transform 0.15s ease, opacity 0.2s ease, background 0.2s ease;
+}
+
+.add-btn:hover {
+  background: #9575CD;       /* hover matches your nav hover */
+  transform: translateY(-1px);
+}
+
+.add-btn:active {
+  transform: translateY(0px);
+  opacity: 0.95;
+}
+
+/* Toast popup */
+.toast {
+  position: fixed;
+  right: 16px;
+  bottom: 16px;
+  background: #333;
+  color: #fff;
+  padding: 10px 14px;
+  border-radius: 12px;
+  box-shadow: 0 12px 30px rgba(0,0,0,0.25);
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  pointer-events: none;
+  font-size: 0.95rem;
+  z-index: 9999;
+  border: 1px solid rgba(179, 157, 219, 0.7);
+}
+
+.toast.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ---------- Home slideshow ---------- */
+.slideshow {
+  max-width: 1100px;
+  margin: 25px auto 10px;
+  padding: 0 20px;
+}
+
+.slideshow-frame {
+  position: relative;
+  border-radius: 14px;
+  overflow: hidden;
+  border: 1px solid #ddd;
+  background: #FFFACD;
+  box-shadow: 0 6px 16px rgba(0,0,0,0.12);
+}
+
+.slide {
+  display: none;
+  position: relative;
+}
+
+.slide.active {
+  display: block;
+}
+
+.slide img {
+  width: 100%;
+  height: 420px;
+  object-fit: cover;
+  display: block;
+}
+
+@media (max-width: 700px) {
+  .slide img { height: 260px; }
+}
+
+.slide-caption {
+  position: absolute;
+  left: 14px;
+  bottom: 14px;
+  background: rgba(51, 51, 51, 0.78);
+  color: #fff;
+  padding: 10px 12px;
+  border-radius: 12px;
+  max-width: 80%;
+  backdrop-filter: blur(2px);
+}
+
+.slide-caption h3 {
+  margin: 0 0 4px;
+  font-size: 1rem;
+  color: #B39DDB;
+}
+
+.slide-caption p {
+  margin: 0;
+  font-size: 0.9rem;
+  color: #fff;
+  opacity: 0.95;
+}
+
+/* arrows */
+.slide-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 44px;
+  height: 44px;
+  border: none;
+  border-radius: 999px;
+  background: rgba(51, 51, 51, 0.75);
+  color: #fff;
+  cursor: pointer;
+  font-size: 20px;
+  font-weight: 800;
+  display: grid;
+  place-items: center;
+  transition: background 0.2s ease, transform 0.15s ease;
+}
+
+.slide-btn:hover {
+  background: rgba(149, 117, 205, 0.85); /* your hover purple */
+}
+
+.slide-btn:active {
+  transform: translateY(-50%) scale(0.98);
+}
+
+.slide-btn.prev { left: 12px; }
+.slide-btn.next { right: 12px; }
+
+/* dots */
+.dots {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 0 0;
+}
+
+.dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+  background: rgba(51, 51, 51, 0.25);
+  border: 1px solid rgba(51, 51, 51, 0.25);
+  cursor: pointer;
+}
+
+.dot.active {
+  background: #B39DDB;
+  border-color: #B39DDB;
+}
+
+/* home hero text alignment */
+.home-hero {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 10px 20px 0;
+  text-align: center;
+}
+.home-hero h2 {
+  margin: 10px 0 6px;
+  color: #000;
+  text-shadow: 0px 0px 5px rgba(255,255,255,0.5);
+}
+.home-hero p {
+  margin: 0 0 8px;
+  color: #333;
+  font-weight: 600;
+}
+
+.dashboard-header {
+    display: flex;
+    justify-content: flex-start; /* Aligns the text to the left */
+    max-width: 1200px; /* Matches your menu-grid width */
+    margin: 0 auto; /* Keeps the whole container centered on the screen */
+    padding: 30px 40px 10px 40px; /* Adds space around the text */
+}
+
+.dashboard-header h1 {
+    margin: 0;
+    font-size: 1.8rem;
+    color: #333;
+    /* Using your high-visibility shadow for that professional touch */
+    text-shadow: 0px 0px 5px rgba(255, 255, 255, 0.5); 
+}
+
+.dashboard-section {
+    max-width: 98%; 
+    /* Change this line: 'auto' centers it, '0' pushes it left */
+    margin: 20px 0; 
+    /* Tweak the 30px to match the exact left-offset of your greeting */
+    padding: 0 30px; 
+}
+
+/* Card adjustment */
+.empty-state-card {
+    /* Ensure this is set to 0 to remove centering */
+    margin-left: 0; 
+    /* This ensures content inside the card stays left-aligned */
+    align-items: flex-start; 
+    text-align: left;
+    width: 100%;
+}
+
+/* Adjust the "Past Orders" text to match the left alignment */
+#past-orders-container {
+    text-align: left;
+    padding: 10px 0;
+    color: #333;
+}

@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Owner Metrics | Cheat Day Catering</title>
+
+  <link rel="stylesheet" href="style.css" />
+  <script src="auth-config.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <style>
+    /* Keeps the page hidden until the Bouncer confirms you are an owner */
+    html { visibility: visible !important; }
+    
+    .metrics-wrap { max-width: 1200px; margin: 0 auto; padding: 0 20px 30px; text-align: left; }
+    .metrics-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 18px; margin: 10px auto 20px; }
+    .insights-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 18px; margin-bottom: 25px; }
+    .metric-label { margin: 0; font-size: 14px; color: #333; font-weight: 800; }
+    .metric-value { margin-top: 10px; font-size: 1.8rem; font-weight: 900; color: #333; line-height: 1.1; }
+    .panel { background-color: #FFFACD; border: 1px solid #ddd; border-radius: 12px; padding: 18px; box-shadow: 0 4px 8px rgba(0,0,0,0.10); margin-bottom: 18px; }
+    .panel-head { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; margin-bottom: 10px; }
+    .panel h2 { margin: 0; color: #333; font-size: 1.2rem; }
+    .popularity-container { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin-top: 15px; }
+    .rank-list { list-style: none; padding: 0; margin: 0; }
+    .rank-item { margin-bottom: 15px; }
+    .rank-info { display: flex; justify-content: space-between; font-weight: 700; font-size: 0.9rem; margin-bottom: 5px; }
+    .bar-bg { background: rgba(0,0,0,0.05); height: 10px; border-radius: 5px; overflow: hidden; }
+    .bar-fill { height: 100%; border-radius: 5px; }
+    .top-bar { background: #4CAF50; }
+    .bottom-bar { background: #e07a7a; }
+    .table-wrap { overflow-x: auto; background: #fff; border-radius: 12px; border: 1px solid #eee; }
+    table { width: 100%; border-collapse: collapse; min-width: 650px; }
+    th, td { padding: 12px; border-bottom: 1px solid #eee; text-align: left; color: #333; }
+    th { background: rgba(179, 157, 219, 0.20); font-weight: 900; }
+    .pill { display: inline-block; padding: 6px 12px; border-radius: 999px; font-size: 12px; font-weight: 800; background: rgba(179, 157, 219, 0.25); border: 1px solid rgba(179, 157, 219, 0.65); color: #333; }
+    .status-pill { display: inline-block; padding: 6px 10px; border-radius: 999px; font-size: 12px; font-weight: 800; border: 1px solid transparent; color: #333; }
+    .st-pending { background: rgba(255, 228, 181, 0.8); border-color: #f3d88b; }
+    .st-ready { background: rgba(168, 255, 202, 0.8); border-color: #7bd8a9; }
+    .st-completed { background: rgba(210, 210, 210, 0.4); border-color: #bbb; }
+    
+    /* Updated Pill Styling for Owner Page to match Staff Orders */
+    #loggedInUser { 
+      margin-left: 8px; 
+      color: #fff; 
+      background: #333; 
+      border: 1px solid #b39ddb; 
+      padding: 6px 12px; 
+      border-radius: 999px; 
+      font-size: 12px; 
+      font-weight: 800; 
+      display: none; 
+      vertical-align: middle;
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <a href="index.html" class="logo">
+      <img src="images/weezler.svg" alt="Cheat Day Logo" class="logo-img">
+    </a>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="menu.html">Menu</a>
+      <a href="staff-orders.html">Staff Orders</a>
+      <a href="owner_page.html" class="active">Owner Metrics</a>
+      <a href="menu_management.html">Menu Management</a>
+      <span id="loggedInUser"></span>
+      <a href="#" id="signOutLink">Sign Out</a>
+    </nav>
+  </header>
+
+  <main>
+    <div class="dashboard-header">
+      <h1 style="padding-left: 20px;">Owner Dashboard</h1>
+    </div>
+
+    <section class="dashboard-section">
+      <div class="metrics-wrap">
+        <div class="metrics-grid">
+          <div class="item-tile"><p class="metric-label">Today</p><div class="metric-value" id="mToday">$0.00</div></div>
+          <div class="item-tile"><p class="metric-label">This Month</p><div class="metric-value" id="mMonth">$0.00</div></div>
+          <div class="item-tile"><p class="metric-label">This Quarter</p><div class="metric-value" id="mQuarter">$0.00</div></div>
+          <div class="item-tile"><p class="metric-label">All Time</p><div class="metric-value" id="mAll">$0.00</div></div>
+        </div>
+
+        <div class="insights-grid">
+          <div class="item-tile" style="border-left: 5px solid #b39ddb;">
+            <p class="metric-label">Avg. Order Value (AOV)</p>
+            <div class="metric-value" id="mAvg">$0.00</div>
+            <p id="mOrderCount" style="margin-top: 8px; font-size: 0.85rem; color: #777; font-weight: 600;">Based on 0 orders</p>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-head"><h2>Product Performance</h2><span class="pill">Popularity Rank</span></div>
+          <div class="popularity-container">
+            <div>
+              <h3 style="font-size: 0.9rem; color: #4CAF50;">🔥 Top 3 Items</h3>
+              <div id="topItemsList" class="rank-list"><p class="muted">Loading analytics...</p></div>
+            </div>
+            <div>
+              <h3 style="font-size: 0.9rem; color: #e07a7a;">🧊 Bottom 3 Items</h3>
+              <div id="bottomItemsList" class="rank-list"><p class="muted">Loading analytics...</p></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-head"><h2>Revenue Chart</h2><button class="add-btn" id="refreshBtn" type="button">Refresh Data</button></div>
+          <canvas id="revChart" height="120"></canvas>
+        </div>
+
+        <div class="panel">
+          <div class="panel-head"><h2>Recent Orders</h2><span class="pill" id="orderCount">0 orders</span></div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Order ID</th><th>Date</th><th>Total</th><th>Status</th></tr></thead>
+              <tbody id="ordersBody"><tr><td colspan="4">Loading history...</td></tr></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    console.log("!!! SCRIPT HEARTBEAT - IF YOU SEE THIS, JS IS WORKING !!!");
+    const API_URL = "https://1p13n3k8d5.execute-api.us-east-1.amazonaws.com/test/owner/metrics/revenue";
+
+    // --- Helpers ---
+    const money = (n) => Number(n || 0).toLocaleString(undefined, { style: "currency", currency: "USD" });
+    const fmtDate = (v) => v ? new Date(v).toLocaleString() : "";
+    const statusClass = (s) => `st-${String(s || "").toLowerCase().replace(" ", "")}`;
+
+    function parseJwt(token) {
+      try {
+        const base64Url = token.split(".")[1];
+        const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
+        return JSON.parse(atob(base64));
+      } catch (e) { return {}; }
+    }
+
+    // --- Authentication Logic ---
+    function requireOwnerAccess() {
+      const idToken = localStorage.getItem("cheatday_id_token");
+      if (!idToken) {
+        window.location.replace("staff_login.html");
+        return false;
+      }
+      const claims = parseJwt(idToken);
+      const groups = claims["cognito:groups"] || [];
+      
+      console.log("Groups found in token:", groups);
+
+      if (!groups.includes(AUTH_CONFIG.ownerGroup)) {
+        alert("Owner access only.");
+        window.location.replace("staff-orders.html");
+        return false;
+      }
+
+      // Populate UI with Owner Pill Info
+      const el = document.getElementById("loggedInUser");
+      if (el) {
+        const userIdentifier = claims.email || claims["cognito:username"] || "Owner";
+        el.textContent = `Logged in as Owner`;
+        el.style.display = "inline-block";
+        // Apply styling directly for consistency
+        el.style.backgroundColor = "#333";
+        el.style.color = "#fff";
+        el.style.border = "1px solid #b39ddb";
+      }
+
+      document.documentElement.style.visibility = "visible";
+      return true;
+    }
+
+    async function exchangeCodeForTokens(code) {
+      const verifier = sessionStorage.getItem("pkce_verifier");
+      const params = new URLSearchParams({
+        grant_type: "authorization_code",
+        client_id: AUTH_CONFIG.clientId,
+        code: code,
+        redirect_uri: AUTH_CONFIG.redirectUri,
+        code_verifier: verifier
+      });
+
+      try {
+        const res = await fetch(`${AUTH_CONFIG.cognitoDomain}/oauth2/token`, {
+          method: "POST",
+          headers: { "Content-Type": "application/x-www-form-urlencoded" },
+          body: params
+        });
+
+        const data = await res.json();
+        if (!res.ok) {
+          console.error("COGNITO ERROR:", data);
+          return false;
+        }
+
+        localStorage.setItem("cheatday_id_token", data.id_token);
+        localStorage.setItem("cheatday_access_token", data.access_token);
+        return true;
+      } catch (err) {
+        console.error("Exchange Network Error:", err);
+        return false;
+      }
+    }
+
+    function getAuthHeaders() {
+      const token = localStorage.getItem("cheatday_access_token");
+      return { "Content-Type": "application/json", "Authorization": `Bearer ${token}` };
+    }
+
+    // --- Visual Rendering ---
+    function renderPopularity(top3, bottom3) {
+      const buildBar = (item, type) => `
+        <div class="rank-item">
+          <div class="rank-info"><span>${item.Product_name}</span><span>${item.total_sold} sold</span></div>
+          <div class="bar-bg"><div class="bar-fill ${type}-bar" style="width: ${Math.min(item.total_sold * 10, 100)}%"></div></div>
+        </div>`;
+      document.getElementById("topItemsList").innerHTML = top3.length ? top3.map(i => buildBar(i, "top")).join("") : "No data";
+      document.getElementById("bottomItemsList").innerHTML = bottom3.length ? bottom3.map(i => buildBar(i, "bottom")).join("") : "No data";
+    }
+
+    let chart = null;
+    function renderChart(list) {
+      const ctx = document.getElementById("revChart").getContext("2d");
+      if (chart) chart.destroy();
+      chart = new Chart(ctx, {
+        type: "bar",
+        data: {
+          labels: list.map(o => `#${o.Order_ID}`).reverse(),
+          datasets: [{ label: "Order Total ($)", data: list.map(o => o.Total_amount).reverse(), backgroundColor: "#b39ddb" }]
+        },
+        options: { responsive: true, scales: { y: { beginAtZero: true } } }
+      });
+    }
+
+    async function refresh() {
+      try {
+        const res = await fetch(API_URL, { headers: getAuthHeaders() });
+        const data = await res.json();
+        const s = data.summary || {};
+        document.getElementById("mToday").textContent = money(s.today);
+        document.getElementById("mMonth").textContent = money(s.month);
+        document.getElementById("mQuarter").textContent = money(s.quarter);
+        document.getElementById("mAll").textContent = money(s.allTime);
+        document.getElementById("mAvg").textContent = money(s.avgOrderValue);
+        document.getElementById("mOrderCount").textContent = `Based on ${s.totalOrderCount || 0} orders`;
+
+        const list = data.recentOrders || [];
+        document.getElementById("orderCount").textContent = `${list.length} orders`;
+        document.getElementById("ordersBody").innerHTML = list.length 
+          ? list.map(o => `<tr><td>${o.Order_ID}</td><td>${fmtDate(o.Order_date)}</td><td>${money(o.Total_amount)}</td><td><span class="status-pill ${statusClass(o.status)}">${o.status}</span></td></tr>`).join("")
+          : `<tr><td colspan="4">No recent orders found.</td></tr>`;
+
+        renderPopularity(data.top3 || [], data.bottom3 || []);
+        renderChart(list);
+      } catch (err) { console.error("Refresh Error:", err); }
+    }
+
+    // --- Page Initialization ---
+    document.addEventListener("DOMContentLoaded", async () => {
+      console.log("Heartbeat: Page Initializing...");
+      const urlParams = new URLSearchParams(window.location.search);
+      const code = urlParams.get("code");
+
+      if (code) {
+        console.log("Code detected in URL. Starting exchange...");
+        const success = await exchangeCodeForTokens(code);
+        if (success) {
+          window.history.replaceState({}, document.title, window.location.pathname);
+        } else {
+          window.location.replace("staff_login.html");
+          return;
+        }
+      }
+
+      if (requireOwnerAccess()) {
+        document.getElementById("refreshBtn").addEventListener("click", refresh);
+        document.getElementById("signOutLink").addEventListener("click", (e) => {
+          e.preventDefault();
+          localStorage.clear();
+          sessionStorage.clear();
+          window.location.href = "staff_login.html";
+        });
+        refresh();
+      }
+    });
+  </script>
+</body>
+</html>

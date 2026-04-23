@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Menu | Cheat Day Catering</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <header>
+    <a href="index.html" class="logo">
+      <img src="images/weezler.svg" alt="Cheat Day Logo" class="logo-img">
+    </a>
+
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="menu.html">Menu</a>
+      <a href="cart.html" class="cart-link">
+        Cart <span id="cartCount" class="cart-badge">0</span>
+      </a>
+      <a href="staff_login.html">Staff Login</a>
+    </nav>
+  </header>
+
+  <h1>Menu</h1>
+
+  <main>
+    <div class="menu-grid" id="menuGrid">
+      <p style="grid-column: 1 / -1; text-align: center; padding: 50px;">Loading our secret recipes...</p>
+    </div>
+  </main>
+
+  <footer>
+    <div class="footer-container">
+      <div class="footer-column">
+        <h3>Contact Us</h3>
+        <p>Phone: (210) 722-0119</p>
+      </div>
+
+      <div class="footer-column">
+        <h3>Follow Us</h3>
+        <a href="https://www.instagram.com/cheatday.catering/" target="_blank">Instagram</a>
+      </div>
+    </div>
+  </footer>
+
+  <div id="toast" class="toast">Added to cart!</div>
+
+  <script>
+    // --- DATABASE INTEGRATION ---
+    const PUBLIC_MENU_URL = "https://1p13n3k8d5.execute-api.us-east-1.amazonaws.com/test/menu";
+
+    async function fetchMenu() {
+      try {
+        const response = await fetch(PUBLIC_MENU_URL);
+        const products = await response.json();
+        renderMenu(products);
+      } catch (error) {
+        console.error("Error fetching menu:", error);
+        document.getElementById("menuGrid").innerHTML = `<p style="grid-column: 1 / -1; text-align: center;">Unable to load menu. Please try again later.</p>`;
+      }
+    }
+
+    function renderMenu(products) {
+      const menuGrid = document.getElementById("menuGrid");
+      
+      if (products.length === 0) {
+        menuGrid.innerHTML = `<p style="grid-column: 1 / -1; text-align: center;">The kitchen is currently closed. Check back soon!</p>`;
+        return;
+      }
+
+      menuGrid.innerHTML = products.map(product => `
+        <div class="item-tile" 
+             data-id="${product.Product_ID}" 
+             data-name="${product.Product_name}" 
+             data-price="${product.Price}">
+          <img src="images/${product.image_name}" alt="${product.Product_name}">
+          <h3>${product.Product_name}</h3>
+          <p>${product.Description}</p>
+          <span class="price">$${parseFloat(product.Price).toFixed(2)}</span>
+
+          <div class="cart-controls">
+            <label>Qty</label>
+            <input class="qty-input" type="number" min="1" value="1">
+            <button class="add-btn" type="button">Add to Cart</button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // --- CART LOGIC (Preserved) ---
+    const CART_KEY = "cheatday_cart";
+
+    function getCart() {
+      return JSON.parse(localStorage.getItem(CART_KEY) || "[]");
+    }
+
+    function setCart(cart) {
+      localStorage.setItem(CART_KEY, JSON.stringify(cart));
+      updateCartCount();
+    }
+
+    function cartCount() {
+      return getCart().reduce((sum, line) => sum + (line.qty || 0), 0);
+    }
+
+    function updateCartCount() {
+      document.getElementById("cartCount").textContent = cartCount();
+    }
+
+    function addToCart(item, qty) {
+      const cart = getCart();
+      const idx = cart.findIndex(x => x.id == item.id);
+
+      if (idx >= 0) cart[idx].qty += qty;
+      else cart.push({ id: item.id, name: item.name, price: item.price, qty });
+
+      setCart(cart);
+    }
+
+    let toastTimer = null;
+    function showToast(message) {
+      const toast = document.getElementById("toast");
+      toast.textContent = message;
+      toast.classList.add("show");
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => toast.classList.remove("show"), 1200);
+    }
+
+    // Initialization
+    updateCartCount();
+    fetchMenu();
+
+    // Event Delegation for "Add to Cart"
+    document.getElementById("menuGrid").addEventListener("click", (e) => {
+      const btn = e.target.closest(".add-btn");
+      if (!btn) return;
+
+      const tile = btn.closest(".item-tile");
+      const qtyInput = tile.querySelector(".qty-input");
+
+      const qty = Math.max(1, parseInt(qtyInput.value || "1", 10));
+      const item = {
+        id: tile.dataset.id,
+        name: tile.dataset.name,
+        price: Number(tile.dataset.price)
+      };
+
+      addToCart(item, qty);
+      showToast(`Added ${qty} × ${item.name}`);
+      qtyInput.value = "1";
+    });
+  </script>
+</body>
+</html>
