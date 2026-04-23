@@ -2,6 +2,7 @@
 Final Semester Project. Restaurant order management system and customer order system.
 # Cheat Day Catering Platform
 
+DEPLOYED ON AWS AMPLIFY LINK: https://main.d3izqoj4p7aa12.amplifyapp.com/
 ## Overview
 Cheat Day Catering Platform is a full-stack final semester project that focuses on building a **serverless web application** for a real-life sponsor. The system allows **customers** to browse the menu, place pickup orders, and view order information, while **employees** and **owners** can log in to manage and monitor orders. Payments are processed through **Stripe**, and the application is built on AWS using a serverless architecture. :contentReference[oaicite:0]{index=0} :contentReference[oaicite:1]{index=1}
 
@@ -69,7 +70,7 @@ The system follows a serverless AWS architecture:
 6. Staff and owner authentication is handled through **Amazon Cognito**
 7. Payment processing is handled through **Stripe**
 
-This architecture supports modularity, managed cloud services, and easier deployment across environments. :contentReference[oaicite:6]{index=6} :contentReference[oaicite:7]{index=7}
+This architecture supports modularity, managed cloud services, and easier deployment across environments
 
 ## Major Backend Functions
 The backend Lambda currently supports:
@@ -78,16 +79,16 @@ The backend Lambda currently supports:
 - **Order status updates** through `PATCH /staff/orders/...`
 - **Order creation** through `POST /orders`
 
-The order creation flow validates product pricing from the database, calculates tax, creates a Stripe payment intent, inserts customer data if needed, creates the order record, and stores the ordered products. :contentReference[oaicite:8]{index=8} :contentReference[oaicite:9]{index=9}
+The order creation flow validates product pricing from the database, calculates tax, creates a Stripe payment intent, inserts customer data if needed, creates the order record, and stores the ordered products.
 
 ## Authentication and Role-Based Access
-The application uses Amazon Cognito to separate internal access by role. Employees can access the staff order management page, while owners are granted broader access, including owner metrics and administrative functions. The frontend checks Cognito group membership to enforce authorized page access. :contentReference[oaicite:10]{index=10} :contentReference[oaicite:11]{index=11}
+The application uses Amazon Cognito to separate internal access by role. Employees can access the staff order management page, while owners are granted broader access, including owner metrics and administrative functions. The frontend checks Cognito group membership to enforce authorized page access.
 
 ## Payment Handling
-The system integrates with Stripe for payment processing. Stripe is used to create and confirm payment intents, which means sensitive card data is processed through Stripe rather than directly stored in the application backend. :contentReference[oaicite:12]{index=12}
+The system integrates with Stripe for payment processing. Stripe is used to create and confirm payment intents, which means sensitive card data is processed through Stripe rather than directly stored in the application backend. 
 
 ## Deployment
-The frontend is designed to be deployed through **AWS Amplify**, connected to **GitHub** for version control and branch-based deployment. The backend runs in **AWS Lambda** behind **API Gateway**, and the system is intended to move through development, staging, and production environments. The architecture and deployment discussion for the project also support using Amplify for the public frontend and AWS services for the backend stack. :contentReference[oaicite:13]{index=13}
+The frontend is designed to be deployed through **AWS Amplify**, connected to **GitHub** for version control and branch-based deployment. The backend runs in **AWS Lambda** behind **API Gateway**, and the system is intended to move through development, staging, and production environments. The architecture and deployment discussion for the project also support using Amplify for the public frontend and AWS services for the backend stack.
 
 ## Example User Flow
 1. A customer visits the website
@@ -98,8 +99,7 @@ The frontend is designed to be deployed through **AWS Amplify**, connected to **
 6. Employees update the order status
 7. Owners can monitor the business using the owner dashboard and metrics page
 
-The frontend cart and billing page, the staff orders page, and the owner metrics dashboard are all represented in the uploaded project files. :contentReference[oaicite:14]{index=14} :contentReference[oaicite:15]{index=15} :contentReference[oaicite:16]{index=16}
-
+The frontend cart and billing page, the staff orders page, and the owner metrics dashboard are all represented in the uploaded project files.
 ## Future Enhancements
 Potential future improvements include:
 - real-time customer order tracking
