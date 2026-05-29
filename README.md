@@ -3,6 +3,8 @@ Final Semester Project. Restaurant order management system and customer order sy
 # Cheat Day Catering Platform
 
 DEPLOYED ON AWS AMPLIFY LINK: https://main.d3izqoj4p7aa12.amplifyapp.com/
+<img width="1440" height="855" alt="Screenshot 2026-05-28 at 7 24 00 PM" src="https://github.com/user-attachments/assets/8e9e914e-985f-4920-b1a7-64240c7045fb" />
+
 ## Overview
 Cheat Day Catering Platform is a full-stack final semester project that focuses on building a **serverless web application** for a real-life sponsor. The system allows **customers** to browse the menu, place pickup orders, and view order information, while **employees** and **owners** can log in to manage and monitor orders. Payments are processed through **Stripe**, and the application is built on AWS using a serverless architecture. :contentReference[oaicite:0]{index=0} :contentReference[oaicite:1]{index=1}
 
